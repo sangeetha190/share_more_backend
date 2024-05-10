@@ -42,31 +42,51 @@ router.get("/get/data", verifyAccount, (req, res) => {
 // login
 router.post("/login", async (req, res) => {
   let { email, password } = req.body;
-  const result = await User.findOne({ email: email });
+  const user = await User.findOne({ email });
 
-  if (result) {
-    bcryt.compare(password, result.password).then((passwordResult) => {
-      if (passwordResult == true) {
-        jwt.sign(
-          { userId: result._id },
-          process.env.SECRET_KEY,
-          (err, token) => {
-            if (err) {
-              console.log(err);
-            } else {
-              res
-                .status(200)
-                .json({ success: true, msg: "Login Successful", token: token });
-            }
+  if (!user) {
+    return res.status(401).json({ success: false, msg: "User Not Registered" });
+  }
+
+  bcryt
+    .compare(password, user.password)
+    .then((passwordResult) => {
+      if (passwordResult) {
+        const payload = {
+          userId: user._id,
+          role: user.role, // Include user's role in the token payload
+        };
+
+        jwt.sign(payload, process.env.SECRET_KEY, (err, token) => {
+          if (err) {
+            console.log(err);
+            return res
+              .status(500)
+              .json({ success: false, msg: "Server error" });
           }
-        );
+          res
+            .status(200)
+            .json({ success: true, msg: "Login Successful", token: token });
+        });
       } else {
         res.status(401).json({ success: false, msg: "Incorrect Password" });
       }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ success: false, msg: "Server error" });
     });
-  } else {
-    res.status(401).json({ success: false, msg: "User Not Registered" });
-  }
 });
 
+// to get all users
+// Route to get all users
+router.get("/all_users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 module.exports = router;
