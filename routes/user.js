@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const bcryt = require("bcrypt");
+const bcryt = require("bcryptjs");
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 const verifyAccount = require("../middleware/verifyToken");

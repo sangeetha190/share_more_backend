@@ -15,5 +15,5 @@ app.use("/api", apiRouter);
 
 app.get("/", (req, res) => res.send("API is running  🌎 !!!"));
 
-const PORT = process.env.PORT || 4000;
+const PORT = 4400;
 app.listen(PORT, () => console.log("APP is Connected on PORT", PORT));
