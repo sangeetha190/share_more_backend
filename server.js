@@ -13,7 +13,6 @@ app.use(express.json());
 
 // ==============================
 app.use("/api", apiRouter);
-
 app.get("/", (req, res) => res.send("API is running  🌎 !!!"));
 
 const PORT = 4000;
