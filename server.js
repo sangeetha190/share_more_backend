@@ -13,9 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // test code
-// const accountSid = "ACd8c026f8543d0e59263ef0a6ecc42025";
-// const authToken = "4d7b8bfe6ee416ae61a7df3607ec7e04";
-// const twilioPhoneNumber = "+16167103881";
+
 // const client = twilio(accountSid, authToken);
 // app.post("/send-otp", async (req, res) => {
 //   const { mobileNumber } = req.body;
