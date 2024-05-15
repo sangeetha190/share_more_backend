@@ -1,7 +1,8 @@
 const router = require("express").Router();
-const User = require("../models/User");
 const bcrypt = require("bcryptjs");
-
+const { User } = require("../models");
+const jwt = require("jsonwebtoken");
+const verifyAccount = require("../middleware/verifyToken");
 router.get("/", (req, res) => {
   res.send("Admin route is working");
 });
@@ -21,5 +22,43 @@ router.get("/", (req, res) => {
 //     res.json({ msg: error.message });
 //   }
 // });
+// login
+router.post("/login", async (req, res) => {
+  let { email, password } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(401).json({ success: false, msg: "User Not Registered" });
+  }
+
+  bcrypt
+    .compare(password, user.password)
+    .then((passwordResult) => {
+      if (passwordResult) {
+        const payload = {
+          userId: user._id,
+          role: user.role, // Include user's role in the token payload
+        };
+
+        jwt.sign(payload, process.env.SECRET_KEY, (err, token) => {
+          if (err) {
+            console.log(err);
+            return res
+              .status(500)
+              .json({ success: false, msg: "Server error" });
+          }
+          res
+            .status(200)
+            .json({ success: true, msg: "Login Successful", token: token });
+        });
+      } else {
+        res.status(401).json({ success: false, msg: "Incorrect Password" });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ success: false, msg: "Server error" });
+    });
+});
 
 module.exports = router;
