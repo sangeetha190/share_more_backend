@@ -174,9 +174,35 @@ router.post("/send-otp", async (req, res) => {
   }
 });
 
+// list all the Donors
+// Route to list all donors (accessible only to admin)
+router.get("/list", async (req, res) => {
+  try {
+    const donors = await Donor.find();
+    res.json(donors);
+  } catch (error) {
+    console.error("Error fetching donors list", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // ======== edit the Donor
+// GET donor by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const donor = await Donor.findById(req.params.id);
+    if (!donor) {
+      return res.status(404).json({ message: "Donor not found" });
+    }
+    res.json(donor);
+  } catch (error) {
+    console.error("Error fetching donor data", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // API endpoint to edit donor model data
-router.put("/edit/:id", verifyAdmin, async (req, res) => {
+router.put("/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -206,7 +232,7 @@ router.put("/edit/:id", verifyAdmin, async (req, res) => {
         $set: {
           name,
           email,
-          password: hashedPassword, // Update password if provided
+          password: hashedPassword || undefined, // Only set password if provided
           contactNumber,
           age,
           gender,
@@ -216,8 +242,8 @@ router.put("/edit/:id", verifyAdmin, async (req, res) => {
           bloodType,
         },
       },
-      { new: true }
-    ); // Return the updated document
+      { new: true, omitUndefined: true } // Return the updated document and omit undefined fields
+    );
 
     res.json({
       message: "Donor data updated successfully",
@@ -228,9 +254,27 @@ router.put("/edit/:id", verifyAdmin, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-//
 //Route to delete a donor
-router.delete("/delete/:id", verifyAdmin, async (req, res) => {
+// router.delete("/delete/:id", async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     // Find and delete the donor by ID
+//     const deletedDonor = await Donor.findByIdAndDelete(id);
+
+//     // Check if donor exists
+//     if (!deletedDonor) {
+//       return res.status(404).json({ message: "Donor not found" });
+//     }
+
+//     res.json({ message: "Donor deleted successfully", donor: deletedDonor });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+// Route to delete a donor
+router.delete("/delete/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -248,20 +292,19 @@ router.delete("/delete/:id", verifyAdmin, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 // ==================================================================
 // list all the Donors
 // Route to list all donors (accessible only to admin)
-router.get("/list", async (req, res) => {
-  try {
-    // Find all donors in the database
-    const donors = await Donor.find();
-    // Return the list of donors
-    res.json(donors);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
+// router.get("/list", async (req, res) => {
+//   try {
+//     const donors = await Donor.find();
+//     res.json(donors);
+//   } catch (error) {
+//     console.error("Error fetching donors list", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
 // verifyAccount
 router.get("/get/data", verifyAdmin, (req, res) => {
