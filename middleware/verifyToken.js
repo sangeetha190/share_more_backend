@@ -4,10 +4,11 @@ const { User } = require("../models");
 function verifyAccount(req, res, next) {
   const token = req.headers["authorization"];
   if (token) {
+    
     // verifying the token
     jwt.verify(token, process.env.SECRET_KEY, async (err, decodedToken) => {
       if (err) {
-        res.status(401).json({ message: "Acess Denied" });
+        res.status(401).json({ message: "Acess Denied....." });
         return;
       } else {
         // using the jwt token "Id" using the finding here
@@ -19,13 +20,13 @@ function verifyAccount(req, res, next) {
           req.user = data;
           next();
         } else {
-          res.status(401).json({ message: "Acess Denied" });
+          res.status(401).json({ message: "Acess Deniedbnnbnbbnbnbn" });
           return;
         }
       }
     });
   } else {
-    return res.status(401).json({ message: "Acess Denied" });
+    return res.status(401).json({ message: "Acess Denied laste" });
   }
 }
 
