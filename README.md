@@ -1,10 +1,13 @@
 *Notes:*
 
 [Admin Login](https://share-more-backend-1.onrender.com/api/admin/login) => *Email:* **admin@gmail.com** *Password:* **admin123**
+https://share-more-backend-1.onrender.com/api/admin/login
 
 [User Signup](https://share-more-backend-1.onrender.com/api/user/signup) 
+https://share-more-backend-1.onrender.com/api/user/signup
 
 [User Login](https://share-more-backend-1.onrender.com/api/user/login) 
+https://share-more-backend-1.onrender.com/api/user/login
 
 Looking for Blood [Blood Search](https://share-more-backend-1.onrender.com/api/blood/search)
 
