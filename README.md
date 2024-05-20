@@ -1,5 +1,3 @@
-<a href="https://imgbb.com/"><img src="https://i.ibb.co/qYGCxnf/logo5.png" alt="logo5" border="0"></a>
-
 # SHARE MORE
 
 ![Project Logo](https://i.ibb.co/qYGCxnf/logo5.png)
