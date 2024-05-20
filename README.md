@@ -2,27 +2,18 @@
 
 [Admin Login](https://share-more-backend-1.onrender.com/api/admin/login) => *Email:* **admin@gmail.com** *Password:* **admin123**
 
-https://share-more-backend-1.onrender.com/api/admin/login
-
 [User Signup](https://share-more-backend-1.onrender.com/api/user/signup) 
-https://share-more-backend-1.onrender.com/api/user/signup
 
 [User Login](https://share-more-backend-1.onrender.com/api/user/login) 
-https://share-more-backend-1.onrender.com/api/user/login
 
 Looking for Blood [Blood Search](https://share-more-backend-1.onrender.com/api/blood/search)
-https://share-more-backend-1.onrender.com/api/blood/search
 
 Donor Signup: [Donor Signup](https://share-more-backend-1.onrender.com/api/donor/signup)
-https://share-more-backend-1.onrender.com/api/donor/signup
 Donor Login: [Donor Login](https://share-more-backend-1.onrender.com/api/donor/login)
-https://share-more-backend-1.onrender.com/api/donor/login
 Donor Get Data: [Donor Get Data](https://share-more-backend-1.onrender.com/api/donor/get_donor/data)
-https://share-more-backend-1.onrender.com/api/donor/get_donor/data
 Donor Edit ID: [Donor Edit ID](https://share-more-backend-1.onrender.com/api/donor/:id)
 Donor Update: [Donor Update](https://share-more-backend-1.onrender.com/api/donor/edit/:id)
 Donor Delete: [Donor Delete](https://share-more-backend-1.onrender.com/api/donor/delete/:id)
-
 
 Based on CRON, there is no need to trigger any API; it will run automatically every day.
 
@@ -52,4 +43,25 @@ In the Admin panel, Admins can create camp schedules.
 Admins can DELETE, EDIT, and CREATE camp schedules.
 
 Appointment: Based on the appointment selected by the user, a reminder method will send an email or SMS one day before using the CRON job.
+https://share-more-backend-1.onrender.com/api/admin/login
+https://share-more-backend-1.onrender.com/api/user/signup
+https://share-more-backend-1.onrender.com/api/user/login
 
+https://share-more-backend-1.onrender.com/api/blood/search
+
+https://share-more-backend-1.onrender.com/api/donor/signup
+https://share-more-backend-1.onrender.com/api/donor/login
+https://share-more-backend-1.onrender.com/api/donor/get_donor/data
+https://share-more-backend-1.onrender.com/api/donor/:id
+https://share-more-backend-1.onrender.com/api/donor/edit/:id
+https://share-more-backend-1.onrender.com/api/donor/delete/:id
+
+https://share-more-backend-1.onrender.com/api/blood_donor_appointment/booking
+https://share-more-backend-1.onrender.com/api/blood_donor_appointment/get_booking_info
+https://share-more-backend-1.onrender.com/api/blood_donor_appointment/all_appoinment_list
+
+https://share-more-backend-1.onrender.com/api/camp_schedule/create
+https://share-more-backend-1.onrender.com/api/camp_schedule/list
+https://share-more-backend-1.onrender.com/api/camp_schedule/:id
+https://share-more-backend-1.onrender.com/api/camp_schedule/edit/:id
+https://share-more-backend-1.onrender.com/api/camp_schedule/delete/:id
