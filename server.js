@@ -41,5 +41,5 @@ app.post("/send-otp", async (req, res) => {
   }
 });
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000; // Use the PORT environment variable if available, otherwise default to 4000
 app.listen(PORT, () => console.log("APP is Connected on PORT", PORT));
