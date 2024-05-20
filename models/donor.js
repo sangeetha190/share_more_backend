@@ -1,3 +1,4 @@
+// donor.js
 const mongoose = require("mongoose");
 
 const DonorSchema = new mongoose.Schema(
@@ -24,7 +25,7 @@ const DonorSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"], // Assuming these are the possible genders
+      enum: ["male", "female", "other"],
       required: true,
     },
     state: {
@@ -37,7 +38,7 @@ const DonorSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["married", "single"], // Assuming only two statuses are allowed
+      enum: ["married", "single"],
       default: "single",
     },
     bloodType: {
@@ -58,8 +59,11 @@ const DonorSchema = new mongoose.Schema(
       type: String,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
-const Donor = mongoose.model("donors", DonorSchema);
+
+const Donor = mongoose.model("Donor", DonorSchema);
 
 module.exports = Donor;

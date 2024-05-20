@@ -32,10 +32,14 @@ const UserSchema = new mongoose.Schema(
       // 2.support team
       // 3.user
     },
+    donorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Donor",
+    },
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("users", UserSchema);
+const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

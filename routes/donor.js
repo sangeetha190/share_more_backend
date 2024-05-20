@@ -45,6 +45,7 @@ router.post("/signup", async (req, res) => {
       contactNumber: req.body.contactNumber,
       loginType: 4,
       role: "donor", // Set role to "donor"
+      donorId: donor._id, // Store the donor ID in the User model
     });
 
     // creating the token using "user_id and secrect_key"
