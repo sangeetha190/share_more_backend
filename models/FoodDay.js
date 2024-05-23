@@ -42,6 +42,11 @@ const daySchema = new mongoose.Schema({
     enum: ["collect", "visit"], // Add an enum for the action
     required: true,
   },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // Reference to the User model
+    required: true,
+  },
 });
 
 // Create the Day model from the schema

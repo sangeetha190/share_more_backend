@@ -1,3 +1,4 @@
+const auth = require("../middleware/auth");
 const FoodDay = require("../models/FoodDay");
 const Organization = require("../models/Organization");
 
@@ -19,7 +20,8 @@ const generateUniqueId = () => {
   return `SM${year}${month}${day}${hours}${minutes}${seconds}`;
 };
 // Route handler to handle POST requests to create a new FoodDay instance
-router.post("/create", async (req, res) => {
+router.post("/create", auth, async (req, res) => {
+  const userId = req.user.id; // Retrieved from authenticated user
   try {
     // Extract data from the request body
     const {
@@ -43,6 +45,7 @@ router.post("/create", async (req, res) => {
       charityId,
       contactNumber,
       action,
+      userId,
     });
 
     // Save the new instance to the database
@@ -74,4 +77,26 @@ router.post("/charity", async (req, res) => {
   }
 });
 
+router.get("/food_history", async (req, res) => {
+  try {
+    // Populate the 'userPastingId' field with the corresponding  document
+    const datas = await FoodDay.find().populate("userId").populate("charityId");
+    res.status(200).json(datas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+router.get("/user-food_history", auth, async (req, res) => {
+  const userId = req.user.id; // Retrieved from authenticated user
+
+  try {
+    const response_data = await FoodDay.find({ userId })
+      .populate("userId")
+      .populate("charityId");
+    res.json(response_data);
+  } catch (error) {
+    res.status(500).send({ error: "Error fetching payments" });
+  }
+});
 module.exports = router;
