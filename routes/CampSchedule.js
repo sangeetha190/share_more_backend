@@ -132,4 +132,22 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+router.post("/search_camp", async (req, res) => {
+  const { state, district } = req.body;
+
+  try {
+    // Search for organizations matching the provided state, district, and type
+    const matchedOrganizations = await CampSchedule.find({
+      state,
+      district,
+    });
+
+    res.json(matchedOrganizations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = router;

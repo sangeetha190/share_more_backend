@@ -43,6 +43,11 @@ const DonorAppointmentSchema = new Schema(
       enum: ["email", "sms", "none"],
       default: "none",
     },
+    hosptial_blood_bank_id: {
+      type: Schema.Types.ObjectId,
+      ref: "Organization", // Reference to the Donor model
+      required: true,
+    },
   },
   {
     timestamps: true,
