@@ -94,8 +94,14 @@ const generateUniqueId = () => {
 
 // Create an appointment
 router.post("/booking", auth, async (req, res) => {
-  const { appointment_date, reminder_date, reminder_method, state, district } =
-    req.body;
+  const {
+    appointment_date,
+    reminder_date,
+    reminder_method,
+    state,
+    district,
+    hosptial_blood_bank_id,
+  } = req.body;
   const donor_id = req.user.id; // Retrieved from authenticated user
 
   // Validate input data
@@ -114,6 +120,7 @@ router.post("/booking", auth, async (req, res) => {
       unique_id,
       reminder_date,
       reminder_method,
+      hosptial_blood_bank_id,
     });
 
     await newAppointment.save();
