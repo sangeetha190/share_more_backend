@@ -94,6 +94,7 @@ router.post("/create", auth, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 router.get("/all_info", async (req, res) => {
   try {
     // Populate the 'userPastingId' field with the corresponding  document
@@ -103,6 +104,18 @@ router.get("/all_info", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
+  }
+});
+router.get("/user-clothes_info", auth, async (req, res) => {
+  const userId = req.user.id; // Retrieved from authenticated user
+  try {
+    const response_data = await ClothesDonation.find({ userId }).populate(
+      "userId"
+    );
+    res.json(response_data);
+    console.log(response_data);
+  } catch (error) {
+    res.status(500).send({ error: "Error fetching Clothes info" });
   }
 });
 module.exports = router;

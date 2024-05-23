@@ -82,14 +82,14 @@ cron.schedule("0 8 * * *", async () => {
 const generateUniqueId = () => {
   const now = new Date();
 
-  const year = now.getFullYear().toString().slice(-2);
-  const month = (now.getMonth() + 1).toString().padStart(2, "0");
-  const day = now.getDate().toString().padStart(2, "0");
+  // const year = now.getFullYear().toString().slice(-2);
+  // const month = (now.getMonth() + 1).toString().padStart(2, "0");
+  // const day = now.getDate().toString().padStart(2, "0");
   const hours = now.getHours().toString().padStart(2, "0");
   const minutes = now.getMinutes().toString().padStart(2, "0");
   const seconds = now.getSeconds().toString().padStart(2, "0");
 
-  return `SM${year}${month}${day}${hours}${minutes}${seconds}`;
+  return `SM${hours}${minutes}${seconds}`;
 };
 
 // Create an appointment
@@ -102,7 +102,7 @@ router.post("/booking", auth, async (req, res) => {
     district,
     hosptial_blood_bank_id,
   } = req.body;
-  const donor_id = req.user.id; // Retrieved from authenticated user
+  const donor_id = req.user._id; // Retrieved from authenticated user
 
   // Validate input data
   if (!appointment_date || !state || !district) {
@@ -167,24 +167,24 @@ router.get("/all_appoinment_list", async (req, res) => {
     // Populate the 'donor_id' field with the corresponding Donor document
     const appointments = await DonorAppointment.find().populate("donor_id");
 
-    // Log appointments and their donor details
-    appointments.forEach((appointment) => {
-      console.log("Appointment ID:", appointment._id);
-      if (appointment.donor_id) {
-        console.log("Donor Name:", appointment.donor_id.name);
-        console.log("Donor Email:", appointment.donor_id.email);
-        console.log(
-          "Donor Contact Number:",
-          appointment.donor_id.contactNumber
-        );
-        console.log("Donor Role:", appointment.donor_id.role);
-      }
-    });
-
     res.status(200).json(appointments);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
+  }
+});
+router.get("/user-donor_info", auth, async (req, res) => {
+  const donor_id = req.user._id; // Retrieved from authenticated user
+  try {
+    const response_data = await DonorAppointment.find({
+      donor_id,
+    })
+      .populate("donor_id")
+      .populate("hosptial_blood_bank_id");
+    res.json(response_data);
+    console.log(response_data);
+  } catch (error) {
+    res.status(500).send({ error: "Error fetching Donor info" });
   }
 });
 

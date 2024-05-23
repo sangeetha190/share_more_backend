@@ -11,6 +11,7 @@ const EmailSending = require("./emailandsms");
 const FoodDay = require("./food_day");
 const ClothesDonation = require("./clothesdonation");
 const ForwardedBloodMessge = require("./forward_message");
+const Razorpay_METHOD = require("./razorpay");
 
 router.use("/user", userRouter);
 router.use("/admin", adminRouter);
@@ -24,5 +25,6 @@ router.use("/email", EmailSending);
 router.use("/share_food", FoodDay);
 router.use("/clothes_donation", ClothesDonation);
 router.use("/forward_blood_message", ForwardedBloodMessge);
+router.use("/razorpay_method", Razorpay_METHOD);
 
 module.exports = router;
