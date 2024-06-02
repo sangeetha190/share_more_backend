@@ -27,7 +27,11 @@ const CampScheduleSchema = new Schema(
       type: String,
       required: true,
     },
-    time: {
+    start_time: {
+      type: String,
+      required: true,
+    },
+    end_time: {
       type: String,
       required: true,
     },

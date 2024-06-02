@@ -58,6 +58,10 @@ const DonorSchema = new mongoose.Schema(
     otp: {
       type: String,
     },
+    last_donation_date: {
+      type: Date,
+      default: null, // Setting default value as null
+    },
   },
   {
     timestamps: true,

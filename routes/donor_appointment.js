@@ -93,6 +93,43 @@ const generateUniqueId = () => {
 };
 
 // Create an appointment
+// router.post("/booking", auth, async (req, res) => {
+//   const {
+//     appointment_date,
+//     reminder_date,
+//     reminder_method,
+//     state,
+//     district,
+//     hosptial_blood_bank_id,
+//   } = req.body;
+//   const donor_id = req.user._id; // Retrieved from authenticated user
+
+//   // Validate input data
+//   if (!appointment_date || !state || !district) {
+//     return res.status(400).json({ msg: "Please provide all required fields." });
+//   }
+
+//   const unique_id = generateUniqueId();
+
+//   try {
+//     const newAppointment = new DonorAppointment({
+//       state,
+//       district,
+//       donor_id,
+//       appointment_date,
+//       unique_id,
+//       reminder_date,
+//       reminder_method,
+//       hosptial_blood_bank_id,
+//     });
+
+//     await newAppointment.save();
+//     res.status(201).json(newAppointment);
+//   } catch (err) {
+//     console.error("Error creating appointment:", err.message);
+//     res.status(500).json({ error: "Server Error" });
+//   }
+// });
 router.post("/booking", auth, async (req, res) => {
   const {
     appointment_date,
@@ -109,9 +146,55 @@ router.post("/booking", auth, async (req, res) => {
     return res.status(400).json({ msg: "Please provide all required fields." });
   }
 
-  const unique_id = generateUniqueId();
-
   try {
+    // Check if the user has any appointments with status 'pending'
+    const existingAppointment = await DonorAppointment.findOne({
+      donor_id,
+      status: "pending",
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({ msg: "You already have an appointment." });
+    }
+
+    // Retrieve the user's donorId
+    const user = await User.findById(donor_id);
+    if (!user || !user.donorId) {
+      return res.status(404).json({ msg: "Donor not found in user records" });
+    }
+
+    // Retrieve the donor's information using donorId from user record
+    const donor = await Donor.findById(user.donorId);
+    if (!donor) {
+      return res.status(404).json({ msg: "Donor not found" });
+    }
+
+    // Check eligibility based on last donation date
+    const lastDonationDate = donor.last_donation_date;
+    if (lastDonationDate) {
+      const today = new Date();
+      const twoMonthsAgo = new Date(today);
+      twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+
+      if (lastDonationDate > twoMonthsAgo) {
+        // Calculate the date when the donor will be eligible again
+        const eligibleDate = new Date(lastDonationDate);
+        eligibleDate.setMonth(eligibleDate.getMonth() + 2);
+
+        // Format the date to display in a readable format
+        const formattedDate = eligibleDate.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+        return res.status(400).json({
+          msg: `You need to wait until ${formattedDate} to give blood.`,
+        });
+      }
+    }
+    // Proceed with appointment creation
+    const unique_id = generateUniqueId();
     const newAppointment = new DonorAppointment({
       state,
       district,
@@ -130,6 +213,7 @@ router.post("/booking", auth, async (req, res) => {
     res.status(500).json({ error: "Server Error" });
   }
 });
+
 // Get all appointments for the logged-in donor
 router.get("/get_booking_info", auth, async (req, res) => {
   try {
@@ -188,4 +272,70 @@ router.get("/user-donor_info", auth, async (req, res) => {
   }
 });
 
+// to show the data related to unique id
+router.get("/:unique_id", async (req, res) => {
+  const { unique_id } = req.params;
+
+  try {
+    // const appointment = await DonorAppointment.findOne({ unique_id });
+    const appointment = await DonorAppointment.findOne({ unique_id }).populate({
+      path: "donor_id",
+      populate: { path: "donorId" }, // Populates the nested donorId field in User schema
+    });
+    if (!appointment) {
+      return res.status(404).json({ msg: "Appointment not found" });
+    }
+
+    res.status(200).json(appointment);
+  } catch (err) {
+    console.error("Error fetching appointment:", err.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+// change the status  "done" and last_date to changed date
+router.put("/update/:unique_id", async (req, res) => {
+  const { unique_id } = req.params;
+  console.log(unique_id);
+  try {
+    // Find the appointment by id
+    // const appointment = await DonorAppointment.findOne({ unique_id });
+    const appointment = await DonorAppointment.findOne({
+      unique_id,
+    }).populate({
+      path: "donor_id",
+      populate: { path: "donorId" }, // Populates the nested donorId field in User schema
+    });
+
+    console.log(appointment);
+    if (!appointment) {
+      return res.status(404).json({ msg: "Appointment not found" });
+    }
+    // Check if the appointment status is already "done"
+    if (appointment.status === "done") {
+      return res
+        .status(400)
+        .json({ msg: "Appointment has already been updated" });
+    }
+
+    // Update the appointment status to "done"
+    appointment.status = "done";
+    await appointment.save();
+
+    // Update the donor's last_donation_date to today
+    const donor = await Donor.findById(appointment.donor_id.donorId._id);
+    if (!donor) {
+      return res.status(404).json({ msg: "Donor not found" });
+    }
+
+    donor.last_donation_date = new Date();
+    await donor.save();
+
+    res.status(200).json({
+      msg: "Appointment status updated and donor's last donation date set",
+    });
+  } catch (err) {
+    console.error("Error updating appointment:", err.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
 module.exports = router;

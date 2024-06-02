@@ -89,4 +89,13 @@ router.get("/all_users", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+// Get total user count
+router.get('/totalUsers', async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    res.json({ totalUsers });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 module.exports = router;
