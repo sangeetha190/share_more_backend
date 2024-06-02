@@ -14,7 +14,8 @@ router.post("/create", async (req, res) => {
       address,
       state,
       district,
-      time,
+      start_time,
+      end_time,
       approx_donor,
     } = req.body;
 
@@ -26,7 +27,8 @@ router.post("/create", async (req, res) => {
       address,
       state,
       district,
-      time,
+      start_time,
+      end_time,
       approx_donor,
     });
 
@@ -149,5 +151,13 @@ router.post("/search_camp", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
+// Get total donors count
+router.get("/api/totalCamps", async (req, res) => {
+  try {
+    const totalCamps = await CampSchedule.countDocuments();
+    res.json({ totalCamps });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;

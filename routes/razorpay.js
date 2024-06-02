@@ -71,4 +71,14 @@ router.get("/user-payments", auth, async (req, res) => {
     res.status(500).send({ error: "Error fetching payments" });
   }
 });
+// Get total donation count
+router.get('/api/totalDonations', async (req, res) => {
+  try {
+    const totalDonations = await Payment.countDocuments();
+    res.json({ totalDonations });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;
