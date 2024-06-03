@@ -118,4 +118,55 @@ router.get("/user-clothes_info", auth, async (req, res) => {
     res.status(500).send({ error: "Error fetching Clothes info" });
   }
 });
+// to show the data related to unique id
+router.get("/:uniqueId", async (req, res) => {
+  const { uniqueId } = req.params;
+
+  try {
+    // const appointment = await DonorAppointment.findOne({ unique_id });
+    const appointment = await ClothesDonation.findOne({ uniqueId }).populate(
+      "userId"
+    ); // Populates the nested donorId field in User schema
+
+    if (!appointment) {
+      return res.status(404).json({ msg: "Appointment not found" });
+    }
+
+    res.status(200).json(appointment);
+  } catch (err) {
+    console.error("Error fetching appointment:", err.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+// change the status  "done" and last_date to changed date
+router.put("/update/:uniqueId", async (req, res) => {
+  const { uniqueId } = req.params;
+  try {
+    const appointment = await ClothesDonation.findOne({
+      uniqueId,
+    }).populate("userId"); // Populates the nested donorId field in User schema
+
+    console.log(appointment);
+    if (!appointment) {
+      return res.status(404).json({ msg: "Appointment not found" });
+    }
+    // Check if the appointment status is already "done"
+    if (appointment.status === "completed") {
+      return res
+        .status(400)
+        .json({ msg: "Appointment has already been updated" });
+    }
+
+    // Update the appointment status to "done"
+    appointment.status = "completed";
+    await appointment.save();
+
+    res.status(200).json({
+      msg: "Appointment status updated and donor's last donation date set",
+    });
+  } catch (err) {
+    console.error("Error updating appointment:", err.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
 module.exports = router;
